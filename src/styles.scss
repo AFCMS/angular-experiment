@@ -1,1 +1,102 @@
-/* You can add global styles to this file, and also import other style files */
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  color-scheme: dark;
+  // The root scrolling element reserves the viewport's scrollbar space.
+  scrollbar-gutter: stable;
+
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  // Customize public tokens through Material's supported Sass APIs.
+  @include mat.form-field-overrides(
+    (
+      container-text-size: 0.875rem,
+      container-text-line-height: 1.25rem,
+      outlined-container-shape: 6px,
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      trigger-text-size: 0.875rem,
+      trigger-text-line-height: 1.25rem,
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 6px,
+      outlined-container-shape: 6px,
+      text-container-shape: 6px,
+      filled-horizontal-padding: 12px,
+      outlined-horizontal-padding: 12px,
+      text-horizontal-padding: 10px,
+      filled-label-text-size: 0.8125rem,
+      outlined-label-text-size: 0.8125rem,
+      text-label-text-size: 0.8125rem,
+    )
+  );
+}
+
+// Emit compact density only for precise pointers; density 0 emits no reset tokens.
+@media (pointer: fine) {
+  html {
+    @include mat.theme(
+      (
+        density: -3,
+      )
+    );
+    @include mat.form-field-overrides(
+      (
+        container-height: 36px,
+        container-vertical-padding: 6px,
+      )
+    );
+  }
+}
+
+// Keep touch controls comfortable while retaining the same theme and shapes.
+@media (pointer: coarse) {
+  html {
+    @include mat.select-overrides(
+      (
+        trigger-text-size: 1rem,
+      )
+    );
+    @include mat.form-field-overrides(
+      (
+        container-text-size: 1rem,
+      )
+    );
+    @include mat.button-overrides(
+      (
+        filled-container-height: 44px,
+        outlined-container-height: 44px,
+        text-container-height: 44px,
+      )
+    );
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+}
