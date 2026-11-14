@@ -166,6 +166,9 @@ importers:
 
   .:
     dependencies:
+      '@afcms/avro-zod':
+        specifier: ^1.0.0
+        version: 1.0.0(zod@4.6.7)
       '@angular/cdk':
         specifier: ^22.2.7
         version: 22.2.7(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/forms@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
@@ -196,6 +199,9 @@ importers:
       tslib:
         specifier: ^2.9.1
         version: 2.9.1
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
       '@angular/build':
         specifier: ^22.2.7
@@ -220,6 +226,11 @@ importers:
         version: 5.1.0(jsdom@30.1.3)(vite@8.3.5(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1))
 
 packages:
+
+  '@afcms/avro-zod@1.0.0':
+    resolution: {integrity: sha512-p90EqnudMBCjfOu92DTvTyFpWcpk06xLLo5dFYJOyasAAsBVmACXWb2pO2EtH3TVvNnXAbrZYeFbGWhH2Yf96Q==}
+    peerDependencies:
+      zod: ^4
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -2380,6 +2391,10 @@ packages:
 
 snapshots:
 
+  '@afcms/avro-zod@1.0.0(zod@4.6.7)':
+    dependencies:
+      zod: 4.6.7
+
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
@@ -2952,12 +2967,12 @@ snapshots:
 
   '@modelcontextprotocol/core@2.3.1':
     dependencies:
-      zod: 4.6.6
+      zod: 4.6.7
 
   '@modelcontextprotocol/server@2.3.1':
     dependencies:
       '@modelcontextprotocol/core': 2.3.1
-      zod: 4.6.6
+      zod: 4.6.7
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.7':
     optional: true
