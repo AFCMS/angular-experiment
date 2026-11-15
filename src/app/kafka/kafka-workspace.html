@@ -1,0 +1,21 @@
+<main>
+  <h1>Kafka relay</h1>
+  <mat-tab-group
+    aria-label="Kafka workspaces"
+    [mat-stretch-tabs]="false"
+    [preserveContent]="true"
+    animationDuration="150ms"
+  >
+    @for (tab of tabs; track tab.label) {
+      <mat-tab [label]="tab.label">
+        <ng-template matTabContent>
+          <div class="control-grid">
+            @for (cell of tab.cells; track $index) {
+              <app-kafka-cell [definition]="cell" />
+            }
+          </div>
+        </ng-template>
+      </mat-tab>
+    }
+  </mat-tab-group>
+</main>

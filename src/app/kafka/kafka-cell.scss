@@ -1,0 +1,71 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+.control-cell {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.5rem;
+}
+h2,
+p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+h2 {
+  font: var(--mat-sys-title-small);
+}
+p {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+.preset-row,
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+.cell-fields {
+  display: grid;
+  gap: 0.5rem;
+}
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.25rem;
+}
+mat-form-field {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+textarea {
+  resize: vertical;
+}
+.completion-error {
+  grid-column: 1 / -1;
+}
+footer p {
+  flex: 1;
+}
+.is-error {
+  color: var(--mat-sys-error);
+}
+button {
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+button[aria-pressed='true'] {
+  color: var(--mat-sys-primary);
+  font-weight: 700;
+}
+@media (pointer: coarse) {
+  button {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+  }
+}

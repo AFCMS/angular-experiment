@@ -1,0 +1,121 @@
+<form
+  class="control-cell"
+  [formGroup]="state().form"
+  [attr.aria-labelledby]="cellId + '-heading'"
+  [attr.aria-busy]="pending()"
+  #formElement
+  #cellForm="ngForm"
+  (ngSubmit)="send(formElement)"
+>
+  <h2 [id]="cellId + '-heading'">{{ definition().title }}</h2>
+
+  @if (definition().presets.length) {
+    <div class="preset-row" role="group" [attr.aria-label]="definition().title + ' presets'">
+      @for (preset of definition().presets; track preset.label) {
+        <button
+          matButton="outlined"
+          type="button"
+          [disabled]="pending()"
+          (click)="sendPreset(preset)"
+        >
+          {{ preset.label }}
+        </button>
+      }
+    </div>
+  }
+
+  <div class="cell-fields" (input)="clearFeedback()" (change)="clearFeedback()">
+    @for (field of state().fields; track field.key) {
+      @let fieldId = cellId + '-' + field.key;
+      <div class="field-row">
+        @if (field.kind === 'boolean' && field.control.value !== null) {
+          <mat-checkbox [formControl]="field.control" [id]="fieldId" [name]="field.key">{{
+            field.label
+          }}</mat-checkbox>
+        } @else {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ field.label }}</mat-label>
+            @switch (field.kind) {
+              @case ('select') {
+                <mat-select
+                  [formControl]="field.control"
+                  [id]="fieldId"
+                  [attr.name]="field.key"
+                  [canSelectNullableOptions]="true"
+                  (selectionChange)="clearFeedback()"
+                >
+                  @if (field.nullable) {
+                    <mat-option [value]="null">null</mat-option>
+                  }
+                  @for (option of field.options; track option) {
+                    <mat-option [value]="option">{{ option }}</mat-option>
+                  }
+                </mat-select>
+              }
+              @case ('custom') {
+                <textarea
+                  matInput
+                  rows="2"
+                  [formControl]="field.control"
+                  [id]="fieldId"
+                  [name]="field.key"
+                  [readonly]="field.control.value === null"
+                  [placeholder]="field.control.value === null ? 'null' : ''"
+                ></textarea>
+              }
+              @default {
+                <input
+                  matInput
+                  type="text"
+                  [formControl]="field.control"
+                  [id]="fieldId"
+                  [name]="field.key"
+                  [attr.inputmode]="
+                    field.kind === 'bigint'
+                      ? 'numeric'
+                      : field.kind === 'number'
+                        ? 'decimal'
+                        : 'text'
+                  "
+                  [readonly]="field.control.value === null"
+                  [placeholder]="field.control.value === null ? 'null' : ''"
+                  [matAutocomplete]="completion"
+                  [matAutocompleteDisabled]="!field.complete || field.control.value === null"
+                />
+                <mat-autocomplete #completion="matAutocomplete" (optionSelected)="clearFeedback()">
+                  @for (option of field.suggestions | async; track option) {
+                    <mat-option [value]="option">{{ option }}</mat-option>
+                  }
+                </mat-autocomplete>
+              }
+            }
+            <mat-error>{{ field.control.getError('payload') }}</mat-error>
+          </mat-form-field>
+        }
+        @if (field.nullable && field.kind !== 'select') {
+          <button
+            matButton
+            type="button"
+            [attr.aria-label]="field.label + ': toggle null'"
+            [attr.aria-pressed]="field.control.value === null"
+            [title]="field.control.value === null ? 'Edit value' : 'Set null'"
+            (click)="toggleNull(field)"
+          >
+            null
+          </button>
+        }
+        @if (field.completionError()) {
+          <p class="completion-error" role="status">{{ field.completionError() }}</p>
+        }
+      </div>
+    }
+  </div>
+
+  <footer>
+    <p role="status" [class.is-error]="failed()">{{ feedback() }}</p>
+    <button matButton type="button" [disabled]="pending()" (click)="reset(cellForm)">Reset</button>
+    <button matButton="filled" type="submit" [disabled]="pending()">
+      {{ pending() ? 'Sending…' : 'Send' }}
+    </button>
+  </footer>
+</form>
