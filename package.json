@@ -3,34 +3,39 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "generate:kafka": "node scripts/generate_kafka.ts",
+    "check:kafka": "node scripts/generate_kafka.ts --check",
+    "start": "node scripts/generate_kafka.ts && ng serve",
+    "build": "node scripts/generate_kafka.ts && ng build",
+    "watch": "node scripts/generate_kafka.ts && ng build --watch --configuration development",
+    "test": "node scripts/generate_kafka.ts && node --test scripts/*.test.ts && ng test",
+    "test:scripts": "node --test scripts/*.test.ts",
+    "typecheck": "node scripts/generate_kafka.ts && tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit && tsc -p scripts/tsconfig.json"
   },
   "private": true,
   "dependencies": {
-    "@afcms/avro-zod": "^1.0.0",
-    "@angular/cdk": "^22.2.7",
-    "@angular/common": "^22.2.6",
-    "@angular/compiler": "^22.2.6",
-    "@angular/core": "^22.2.6",
-    "@angular/forms": "^22.2.6",
-    "@angular/material": "^22.2.7",
-    "@angular/platform-browser": "^22.2.6",
-    "@angular/router": "^22.2.6",
+    "@afcms/avro-zod": "^2.1.0",
+    "@angular/cdk": "^22.3.0",
+    "@angular/common": "^22.3.0",
+    "@angular/compiler": "^22.3.0",
+    "@angular/core": "^22.3.0",
+    "@angular/forms": "^22.3.0",
+    "@angular/material": "^22.3.0",
+    "@angular/platform-browser": "^22.3.0",
+    "@angular/router": "^22.3.0",
     "rxjs": "~7.8.2",
     "tslib": "^2.9.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@angular/build": "^22.2.7",
-    "@angular/cli": "^22.2.7",
-    "@angular/compiler-cli": "^22.2.6",
+    "@angular/build": "^22.3.0",
+    "@angular/cli": "^22.3.0",
+    "@angular/compiler-cli": "^22.3.0",
+    "@types/node": "^26.6.10",
     "jsdom": "^30.0.0",
     "prettier": "^3.10.1",
     "typescript": "~6.0.2",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.2"
   },
   "devEngines": {
     "runtime": {

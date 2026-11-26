@@ -1,5 +1,5 @@
 import type { Observable } from 'rxjs';
-import { z } from 'zod';
+import * as z from 'zod/v4/core';
 import { serializeRelayJson } from './kafka-cell-utils';
 
 export type CompletionResult<T extends string = string> =
@@ -68,7 +68,7 @@ type RuntimeEditor = {
   format?: (value: unknown) => string;
 };
 
-export function defineKafkaCell<S extends z.ZodObject, const D extends Defaults<z.output<S>>>(
+export function defineKafkaCell<S extends z.$ZodObject, const D extends Defaults<z.output<S>>>(
   schema: S,
   config: KafkaCellConfig<z.output<NoInfer<S>>, D>,
 ): KafkaCellDefinition<z.output<S>> {
@@ -78,7 +78,7 @@ export function defineKafkaCell<S extends z.ZodObject, const D extends Defaults<
   );
   const dynamic = entries.filter(([, value]) => typeof value === 'function');
   const createPayload = (base: Readonly<Record<string, unknown>>, edits = {}): z.output<S> =>
-    schema.parse({
+    z.parse(schema, {
       ...structuredClone(base),
       ...edits,
       ...Object.fromEntries(dynamic.map(([key, factory]) => [key, (factory as () => unknown)()])),
@@ -88,27 +88,29 @@ export function defineKafkaCell<S extends z.ZodObject, const D extends Defaults<
   const fields = (Object.entries(config.fields ?? {}) as [string, true | RuntimeEditor][]).map(
     ([key, setting]): CellField => {
       const editor = setting === true ? {} : setting;
-      const validator = schema.shape[key] as z.ZodType;
+      const validator = schema._zod.def.shape[key];
       if (!validator || dynamic.some(([name]) => name === key))
         throw new Error(`Cannot edit field "${key}".`);
       const scalar = unwrapNullable(validator);
-      const options = editor.options ?? (scalar instanceof z.ZodEnum ? scalar.options : undefined);
+      const options =
+        editor.options ??
+        (scalar instanceof z.$ZodEnum ? Object.values(scalar._zod.def.entries) : undefined);
       const kind = editor.parse
         ? 'custom'
         : options
           ? 'select'
-          : scalar instanceof z.ZodBigInt
+          : scalar instanceof z.$ZodBigInt
             ? 'bigint'
-            : scalar instanceof z.ZodNumber
+            : scalar instanceof z.$ZodNumber
               ? 'number'
-              : scalar instanceof z.ZodBoolean
+              : scalar instanceof z.$ZodBoolean
                 ? 'boolean'
                 : 'text';
       return {
         key,
         label: editor.label ?? key.charAt(0).toUpperCase() + key.slice(1),
         kind,
-        nullable: validator.safeParse(null).success,
+        nullable: z.safeParse(validator, null).success,
         options: options ?? [],
         complete: editor.complete,
         parse: (value) => {
@@ -125,7 +127,7 @@ export function defineKafkaCell<S extends z.ZodObject, const D extends Defaults<
               parsed = Number(value);
             }
           }
-          return validator.parse(parsed);
+          return z.parse(validator, parsed);
         },
         format: (value) =>
           value === null
@@ -162,11 +164,11 @@ export function defineKafkaCell<S extends z.ZodObject, const D extends Defaults<
   };
 }
 
-function unwrapNullable(schema: z.ZodType): z.ZodType {
-  if (schema instanceof z.ZodNullable) return unwrapNullable(schema.unwrap() as z.ZodType);
-  if (schema instanceof z.ZodUnion) {
-    const options = schema.options.filter((option) => !(option instanceof z.ZodNull));
-    if (options.length === 1) return unwrapNullable(options[0] as z.ZodType);
+function unwrapNullable(schema: z.$ZodType): z.$ZodType {
+  if (schema instanceof z.$ZodNullable) return unwrapNullable(schema._zod.def.innerType);
+  if (schema instanceof z.$ZodUnion) {
+    const options = schema._zod.def.options.filter((option) => !(option instanceof z.$ZodNull));
+    if (options.length === 1) return unwrapNullable(options[0]);
   }
   return schema;
 }

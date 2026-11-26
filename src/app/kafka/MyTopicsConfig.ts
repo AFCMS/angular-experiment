@@ -1,4 +1,4 @@
-import { MyTopicSchema } from './MyTopic';
+import { MyTopicGeneratedParameters, MyTopicSchema } from './defs/MyTopic';
 import { defineKafkaCell } from './kafka-cell-definition';
 
 const notes = ['Created from the relay', 'Ready for processing', 'Processed successfully'];
@@ -6,7 +6,7 @@ const notes = ['Created from the relay', 'Ready for processing', 'Processed succ
 export const MyTopicConfig = defineKafkaCell(MyTopicSchema, {
   title: 'My topic',
   endpoint: '/api/kafka/my-topic',
-  defaults: { id: 1n, status: 'NEW', note: null, timestamp: () => BigInt(Date.now()) },
+  defaults: { id: 1n, status: 'NEW', note: null, ...MyTopicGeneratedParameters },
   fields: {
     id: true,
     note: {

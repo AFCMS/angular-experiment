@@ -1,5 +1,5 @@
 import { from, isObservable, type Observable } from 'rxjs';
-import { z } from 'zod';
+import * as z from 'zod/v4/core';
 import type { CompletionResult } from './kafka-cell-definition';
 
 /** Encode bigint as exact JSON integer tokens, without converting through Number. */
@@ -18,7 +18,7 @@ export function serializeRelayJson(value: unknown): string {
 }
 
 export function errorMessage(error: unknown): string {
-  if (error instanceof z.ZodError) return error.issues[0]?.message ?? 'Check this value.';
+  if (error instanceof z.$ZodError) return error.issues[0]?.message ?? 'Check this value.';
   return error instanceof Error ? error.message : 'An unexpected error occurred.';
 }
 

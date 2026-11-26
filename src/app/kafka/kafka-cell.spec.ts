@@ -8,7 +8,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MATERIAL_ANIMATIONS } from '@angular/material/core';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { Subject } from 'rxjs';
-import { MyTopic } from './MyTopic';
+import { MyTopic } from './defs/MyTopic';
 import { MyTopicConfig } from './MyTopicsConfig';
 import { KafkaCell } from './kafka-cell';
 

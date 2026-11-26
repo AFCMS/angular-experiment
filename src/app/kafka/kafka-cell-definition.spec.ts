@@ -1,7 +1,7 @@
 import { expectTypeOf } from 'vitest';
 import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
-import { MyTopicSchema, type MyTopic } from './MyTopic';
+import { MyTopicSchema, type MyTopic } from './defs/MyTopic';
 import {
   defineKafkaCell,
   type Defaults,
@@ -163,6 +163,19 @@ describe('Kafka cell definitions', () => {
       // @ts-expect-error Every field remains required when no defaults are dynamic.
       defaults: { count: 1 },
     });
+  });
+
+  it('infers controls from Avro v2 Core schemas, including nullable strings and enums', () => {
+    const definition = defineKafkaCell(MyTopicSchema, {
+      ...config,
+      fields: { id: true, status: true, note: true },
+    });
+    expect(definition.fields.map((field) => field.kind)).toEqual(['bigint', 'select', 'text']);
+    expect(definition.fields[1].options).toEqual(['NEW', 'DONE']);
+    expect(definition.fields[1].parse('DONE')).toBe('DONE');
+    expect(() => definition.fields[1].parse('INVALID')).toThrow();
+    expect(definition.fields[2].nullable).toBe(true);
+    expect(definition.fields[2].parse(null)).toBeNull();
   });
 
   it('supports preset-only cells and snapshots values without cloning factory functions', () => {
